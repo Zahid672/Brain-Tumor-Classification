@@ -1,24 +1,35 @@
 import torch
 from torch import nn
+from torchvision.models import resnet101, ResNet101_Weights
 
 
-
-
-
-class finetune_resnet101(nn.Module):
-    def __init__(self, base_model, output_classes):
+class feature_extracter(nn.Module):
+    def __init__(self, base_model):
         super().__init__()
         self.base_model = base_model
-        self.base_model.fc = nn.Sequential(
-            nn.Linear(in_features=2048, out_features=1024),
-            nn.ReLU(inplace=True),
-            nn.Linear(in_features=1024, out_features=output_classes)
-        ) 
-    
+        # Remove the final FC layer
+        self.features = nn.Sequential(*list(self.base_model.children())[:-1])
     
     def forward(self, x):
-        out = self.base_model(x)
-        return out
+        # Get features before FC layer and flatten
+        features = self.features(x)
+        features = features.view(features.size(0), -1)  # Flatten: (batch_size, 2048)
+        return features
+    
+# class finetune_resnet101(nn.Module):
+#     def __init__(self, base_model, output_classes):
+#         super().__init__()
+#         self.base_model = base_model
+#         # self.base_model.fc = nn.Sequential(
+#         #     nn.Linear(in_features=2048, out_features=1024),
+#         #     nn.ReLU(inplace=True),
+#         #     nn.Linear(in_features=1024, out_features=output_classes)
+#         # ) 
+    
+    
+#     def forward(self, x):
+#         out = self.base_model(x).fc
+#         return out
 
 # if __name__ == "__main__":
     
