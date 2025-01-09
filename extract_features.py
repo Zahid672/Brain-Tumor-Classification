@@ -29,12 +29,13 @@ model_dict = {
     #           vgg16: VGG16_Weights.DEFAULT, 
     #           vgg19: VGG19_Weights.DEFAULT,
     #           alexnet: AlexNet_Weights.DEFAULT, 
-     #         inception_v3: Inception_V3_Weights.DEFAULT,
-              resnext50_32x4d: ResNeXt50_32X4D_Weights.DEFAULT, 
-              resnext101_32x8d: ResNeXt101_32X8D_Weights.DEFAULT,
-              shufflenet_v2_x1_0: ShuffleNet_V2_X1_0_Weights.DEFAULT, 
-              mobilenet_v2: MobileNet_V2_Weights.DEFAULT,
-              mnasnet0_5: MNASNet0_5_Weights.DEFAULT}
+             inception_v3: Inception_V3_Weights.DEFAULT,
+            #   resnext50_32x4d: ResNeXt50_32X4D_Weights.DEFAULT, 
+            #   resnext101_32x8d: ResNeXt101_32X8D_Weights.DEFAULT,
+            #   shufflenet_v2_x1_0: ShuffleNet_V2_X1_0_Weights.DEFAULT, 
+            #   mobilenet_v2: MobileNet_V2_Weights.DEFAULT,
+            #   mnasnet0_5: MNASNet0_5_Weights.DEFAULT
+            }
               
 
 

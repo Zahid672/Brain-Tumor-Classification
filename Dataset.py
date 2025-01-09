@@ -82,7 +82,7 @@ def plot_grid_images(x, y, batch_size):
     axes = axes.flatten()  # Flatten the 2D array of axes
 
     for i in range(batch_size):
-        axes[i].imshow(x[i].permute(1, 2, 0))
+        axes[i].imshow(x[i].permute(1, 2, 0)) ### .permute(1, 2, 0) is rearranging the dimensions of the tensor. as the channel dimension (typically RGB) needs to be last for matplotlib's imshow function.
         axes[i].set_title(f"Label: {y[i]}")
         axes[i].axis('off')
 
