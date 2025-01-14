@@ -95,7 +95,7 @@ if __name__ == '__main__':
         new_row = {'Model': model, 'MLP': 0, 'GaussianNB': 0, "Adaboost": 0, "KNN": 0, "RFClassifier": 0, "SVM_linear": 0, "SVM_sigmoid": 0, "SVM_RBF": 0} 
         dataframe.loc[len(dataframe)] = new_row
 
-    main_path = 'extracted_features'
+    main_path = 'extracted_features_1'
     for ml_classifier in ML_CLASSIFIER:
         for model in model_list:
             print('Model:', model)
@@ -119,4 +119,4 @@ if __name__ == '__main__':
             dataframe.loc[dataframe['Model'] == model, ml_classifier] = accuracy
 
         print(dataframe)
-        dataframe.to_csv('results.csv', index=False)
+        dataframe.to_csv('BT-large-2c-dataset_results.csv', index=False)

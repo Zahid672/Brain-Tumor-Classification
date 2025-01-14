@@ -18,6 +18,7 @@ class CustomDataset(Dataset):
         super().__init__()
         
         self.data_dir = data_dir ### self. mean yaw shi da class hissa jora ki
+        # self.sub_dir = sub_dir
         self.data_type = data_type
         
         
@@ -51,6 +52,9 @@ class CustomDataset(Dataset):
         return image, torch.tensor(label).long()
     
     def __process_data(self):
+        if isinstance(self.data_dir, tuple):
+            self.data_dir = os.path.join(*self.data_dir)
+        
         no_images = os.listdir(os.path.join(self.data_dir, 'no'))
         yes_images = os.listdir(os.path.join(self.data_dir, 'yes'))
         
@@ -90,11 +94,12 @@ def plot_grid_images(x, y, batch_size):
     plt.show()
     
     
-# if __name__ == "__main__":
-#     data_dir = 'Images'
-# # data_type = 'Images' ####data_type??????
+if __name__ == "__main__":
+  
+    data_dir = os.path.join('BrainTumorDatasets', 'BT-large-2c-dataset-253im')
+    data_type = "train"
 
-#     batch_size = 9
+# #     batch_size = 9
 
 
 #     transforms = t.Compose([transforms.Grayscale(num_output_channels=3), 
@@ -103,21 +108,21 @@ def plot_grid_images(x, y, batch_size):
         
 
 
-#     ## create the dataset
+# #     ## create the dataset
 #     # dataset = CustomDataset(data_dir, data_type='test', transform=transforms)
-#     train_dataset = CustomDataset(data_dir, data_type='train', transform=transforms)
-#     test_dataset = CustomDataset(data_dir, data_type='test', transform=transforms)
+#     train_dataset = CustomDataset(data_dir, sub_dir, data_type='train', transform=transforms)
+#     test_dataset = CustomDataset(data_dir, sub_dir, data_type='test', transform=transforms)
     
-#     x, y = train_dataset[0]
-#     ## create dataloader
-#     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)  ###debugging: len(train_dataloader) is 23)
-#     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)   ### len(test_dataloader) is 6
+#     # x, y = train_dataset[0]
+# #     ## create dataloader
+# #     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)  ###debugging: len(train_dataloader) is 23)
+# #     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)   ### len(test_dataloader) is 6
 
-#     ##create the dataloader
-#     # dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
-#     for x, y in train_dataloader:
+# #     ##create the dataloader
+# #     # dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+#     for x, y in train_dataset:
 #         print(x.shape, y.shape)
-#         plot_grid_images(x,y, batch_size)
+#         # plot_grid_images(x,y, 'batch_size')
 #         break
 
         

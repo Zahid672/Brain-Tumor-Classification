@@ -13,7 +13,7 @@ from torchvision.models import shufflenet_v2_x1_0, mobilenet_v2, mnasnet0_5
 from torchvision.models import ResNet50_Weights, ResNet101_Weights, DenseNet121_Weights, DenseNet169_Weights, VGG16_Weights, VGG19_Weights
 from torchvision.models import AlexNet_Weights, Inception_V3_Weights, ResNeXt50_32X4D_Weights, ResNeXt101_32X8D_Weights, ShuffleNet_V2_X1_0_Weights
 from torchvision.models import  MNASNet0_5_Weights, MobileNet_V2_Weights
-
+import timm
 
 
 from Dataset import CustomDataset, plot_grid_images
@@ -22,26 +22,32 @@ from model import feature_extracter
 
 
 model_dict = {
-    # resnet50: ResNet50_Weights.DEFAULT, 
-    #           resnet101: ResNet101_Weights.DEFAULT,
-    #           densenet121: DenseNet121_Weights.DEFAULT, 
-    #           densenet169: DenseNet169_Weights.DEFAULT,
-    #           vgg16: VGG16_Weights.DEFAULT, 
-    #           vgg19: VGG19_Weights.DEFAULT,
-    #           alexnet: AlexNet_Weights.DEFAULT, 
-             inception_v3: Inception_V3_Weights.DEFAULT,
-            #   resnext50_32x4d: ResNeXt50_32X4D_Weights.DEFAULT, 
-            #   resnext101_32x8d: ResNeXt101_32X8D_Weights.DEFAULT,
-            #   shufflenet_v2_x1_0: ShuffleNet_V2_X1_0_Weights.DEFAULT, 
-            #   mobilenet_v2: MobileNet_V2_Weights.DEFAULT,
-            #   mnasnet0_5: MNASNet0_5_Weights.DEFAULT
+              resnet50: ResNet50_Weights.DEFAULT, 
+              resnet101: ResNet101_Weights.DEFAULT,
+              densenet121: DenseNet121_Weights.DEFAULT, 
+              densenet169: DenseNet169_Weights.DEFAULT,
+              vgg16: VGG16_Weights.DEFAULT, 
+              vgg19: VGG19_Weights.DEFAULT,
+              alexnet: AlexNet_Weights.DEFAULT, 
+            #  inception_v3: Inception_V3_Weights.DEFAULT,
+              resnext50_32x4d: ResNeXt50_32X4D_Weights.DEFAULT, 
+              resnext101_32x8d: ResNeXt101_32X8D_Weights.DEFAULT,
+              shufflenet_v2_x1_0: ShuffleNet_V2_X1_0_Weights.DEFAULT, 
+              mobilenet_v2: MobileNet_V2_Weights.DEFAULT,
+              mnasnet0_5: MNASNet0_5_Weights.DEFAULT
             }
               
+
+vit_models = {
+    "vit_base_patch16_224": timm.create_model("vit_base_patch16_224", pretrained=True, drop_rate=0.01),
+    "vit_base_patch32_224": timm.create_model("vit_base_patch32_224", pretrained=True, drop_rate=0.01),
+    "vit_large_patch16_224": timm.create_model("vit_large_patch16_224", pretrained=True, drop_rate=0.01),
+}
 
 
 if __name__ == "__main__":
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-    data_dir = 'Images'
+    data_dir = 'BrainTumorDatasets', 'BT-large-2c-dataset-253im'
     
 
     transforms = t.Compose([t.Grayscale(num_output_channels=3), 
@@ -56,7 +62,7 @@ if __name__ == "__main__":
     train_dataset = CustomDataset(data_dir, 'train', transform=transforms)
     test_dataset = CustomDataset(data_dir, 'test', transform=transforms)
 
-    main_dir = "extracted_features"
+    main_dir = "extracted_features_1"
     if not os.path.exists(main_dir):
         os.mkdir(main_dir)
 

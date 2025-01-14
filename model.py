@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 from torchvision.models import resnet101, ResNet101_Weights
-
+import timm
 
 class feature_extracter(nn.Module):
     def __init__(self, base_model):
@@ -10,6 +10,19 @@ class feature_extracter(nn.Module):
         # Remove the final FC layer
         self.features = nn.Sequential(*list(self.base_model.children())[:-1])
     
+    def forward(self, x):
+        # Get features before FC layer and flatten
+        features = self.features(x)
+        features = features.view(features.size(0), -1)  # Flatten: (batch_size, 2048)
+        return features
+    
+class vit_feature_extracter(nn.Module):
+    def __init__(self, base_vit):
+        super().__init__()
+        self.base_vit = base_vit
+        # Remove the head in the vit 
+        self.features = nn.Sequential(*list(self.base_vit.children())[:-1])
+        
     def forward(self, x):
         # Get features before FC layer and flatten
         features = self.features(x)
@@ -31,8 +44,14 @@ class feature_extracter(nn.Module):
 #         out = self.base_model(x).fc
 #         return out
 
-# if __name__ == "__main__":
-    
+if __name__ == "__main__":
+    base_model = timm.create_model("vit_base_patch16_224", pretrained=True, drop_rate=0.01),
+    custom_model = vit_feature_extracter(base_vit=base_model)
+    ## random input
+    x = torch.rand(1,3, 224, 224)
+    out = custom_model(x)
+
+    print(out.shape)
     
 
     
