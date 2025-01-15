@@ -16,8 +16,8 @@ from torchvision.models import  MNASNet0_5_Weights, MobileNet_V2_Weights
 import timm
 
 
-from Dataset import CustomDataset, plot_grid_images
-from model import feature_extracter
+from Dataset_BT_large_4c import CustomDataset #plot_grid_images
+from model import feature_extracter, vit_feature_extracter
 
 
 
@@ -39,15 +39,17 @@ model_dict = {
               
 
 vit_models = {
-    "vit_base_patch16_224": timm.create_model("vit_base_patch16_224", pretrained=True, drop_rate=0.01),
-    "vit_base_patch32_224": timm.create_model("vit_base_patch32_224", pretrained=True, drop_rate=0.01),
-    "vit_large_patch16_224": timm.create_model("vit_large_patch16_224", pretrained=True, drop_rate=0.01),
+    "vit_base_patch16_224": timm.create_model("vit_base_patch16_224", pretrained=True,  num_classes=0),
+    "vit_base_patch32_224": timm.create_model("vit_base_patch32_224", pretrained=True,  num_classes=0),
+    "vit_large_patch16_224": timm.create_model("vit_large_patch16_224", pretrained=True,  num_classes=0),
+    "vit_small_patch32_224": timm.create_model("vit_small_patch32_224", pretrained=True,  num_classes=0),
+    "deit3_small_patch16_224": timm.create_model("deit3_small_patch16_224", pretrained=True,  num_classes=0),
 }
 
 
 if __name__ == "__main__":
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-    data_dir = 'BrainTumorDatasets', 'BT-large-2c-dataset-253im'
+    data_dir = 'BrainTumorDatasets', 'BT-large-4c-dataset-3264im'
     
 
     transforms = t.Compose([t.Grayscale(num_output_channels=3), 
@@ -59,25 +61,27 @@ if __name__ == "__main__":
                             t.ToTensor()])
     
 
-    train_dataset = CustomDataset(data_dir, 'train', transform=transforms)
-    test_dataset = CustomDataset(data_dir, 'test', transform=transforms)
+    train_dataset = CustomDataset(data_dir, 'Training', transform=transforms)
+    test_dataset = CustomDataset(data_dir, 'Testing', transform=transforms)
 
-    main_dir = "extracted_features_1"
+    main_dir = "extracted_features_BT-large-4c"
     if not os.path.exists(main_dir):
         os.mkdir(main_dir)
 
 
-    for key, value in model_dict.items():
+    for key, value in   vit_models.items():           #model_dict.items(): 
         print(f'Extracting features for {key}')
         print(f"model weights: {value}")
-        base_model = key(weights=value)
-        model = feature_extracter(base_model=base_model).to(device)
+        #base_model = key(weights=value) #for cnn models
+        base_model = value
+        #model = feature_extracter(base_model=base_model).to(device) #for cnn models
+        model = vit_feature_extracter(base_vit=base_model).to(device)
 
         if key == inception_v3:
             print('Using Inception_v3')
             transforms = transforms_inception
-            train_dataset = CustomDataset(data_dir, 'train', transform=transforms)
-            test_dataset = CustomDataset(data_dir, 'test', transform=transforms)
+            train_dataset = CustomDataset(data_dir, 'Training', transform=transforms)
+            test_dataset = CustomDataset(data_dir, 'Testing', transform=transforms)
     
 
         ## extract features for each image in the train and test dataset and save them
@@ -108,7 +112,7 @@ if __name__ == "__main__":
         test_data_array_labels = np.array(test_data_array_labels)
 
 
-        sub_dir = os.path.join(main_dir, key.__name__)
+        sub_dir = os.path.join(main_dir, key)
         if not os.path.exists(sub_dir):
             os.mkdir(sub_dir)
 

@@ -51,6 +51,9 @@ class CustomDataset(Dataset):
         return image, torch.tensor(label).long()
     
     def __process_data(self):
+        if isinstance(self.data_dir, tuple):
+            self.data_dir = os.path.join(*self.data_dir)
+            
         glioma_tumor = os.listdir(os.path.join(self.data_dir, self.data_type, 'glioma_tumor'))
         meningioma_tumor_images = os.listdir(os.path.join(self.data_dir, self.data_type, 'meningioma_tumor'))
         no_tumor_images = os.listdir(os.path.join(self.data_dir, self.data_type, 'no_tumor'))
@@ -127,6 +130,10 @@ if __name__ == "__main__":
         print(x.shape, y.shape)
         # plot_grid_images(x,y, batch_size)
         break
+    
+    ##important commands in Debug Console 1-x.shape 2-y.shape 3- train_dataset.labels 4- test_dataset.labels 5- np.unique_counts(train_dataset) 5- np.unique_counts(test_dataset)
+    
+    ## 6- np.unique_counts(train_dataset.labels) 7- np.unique_counts(test_dataset.labels) 8- len(train_dataset) 9- len(test_dataset) 10- len(train_dataset + test_dataset)
 
         
         

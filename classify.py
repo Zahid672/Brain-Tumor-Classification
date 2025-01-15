@@ -1,12 +1,13 @@
 import os 
 
 import numpy as np
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import accuracy_score, classification_report, balanced_accuracy_score
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
+from xgboost import XGBClassifier
 
 ## svm
 from sklearn.svm import SVC
@@ -14,11 +15,12 @@ import pandas as pd
 
 
 model_list = ['resnet50', 'resnet101', 'densenet121', 'densenet169', 'vgg16', 'vgg19', 'alexnet', 
-              'resnext50_32x4d', 'resnext101_32x8d', 'shufflenet_v2_x1_0', 'mobilenet_v2', 'mnasnet0_5']
+              'resnext50_32x4d', 'resnext101_32x8d', 'shufflenet_v2_x1_0', 'mobilenet_v2', 'mnasnet0_5', 
+              'vit_base_patch16_224', 'vit_base_patch32_224', 'vit_large_patch16_224']
               
 
 
-ML_CLASSIFIER = ['MLP', 'GaussianNB', "Adaboost", "KNN", "RFClassifier", "SVM_linear", "SVM_sigmoid", "SVM_RBF",] # "ELM"
+ML_CLASSIFIER = ['MLP', 'GaussianNB', "Adaboost", "KNN", "RFClassifier", "SVM_linear", "SVM_sigmoid", "SVM_RBF", "XGBoost"] # "ELM"
 
 def classify(X_train, y_train, X_test, y_test, classifier, search_type='grid'):
     """
@@ -49,6 +51,8 @@ def classify(X_train, y_train, X_test, y_test, classifier, search_type='grid'):
         clf = SVC(kernel='sigmoid')
     elif classifier == "SVM_RBF":
         clf = SVC(kernel='rbf')
+    elif classifier == "XGBoost":
+        clf = XGBClassifier(n_estimators=500, )
     else:
         print("Invalid classifier")
         return None
@@ -79,7 +83,7 @@ def classify(X_train, y_train, X_test, y_test, classifier, search_type='grid'):
     y_pred = clf.predict(X_test)
 
     # Calculate the accuracy
-    accuracy = accuracy_score(y_test, y_pred)
+    accuracy = balanced_accuracy_score(y_test, y_pred)
     
     return accuracy
 
@@ -95,7 +99,7 @@ if __name__ == '__main__':
         new_row = {'Model': model, 'MLP': 0, 'GaussianNB': 0, "Adaboost": 0, "KNN": 0, "RFClassifier": 0, "SVM_linear": 0, "SVM_sigmoid": 0, "SVM_RBF": 0} 
         dataframe.loc[len(dataframe)] = new_row
 
-    main_path = 'extracted_features_1'
+    main_path = 'extracted_features_BT-large-4c'
     for ml_classifier in ML_CLASSIFIER:
         for model in model_list:
             print('Model:', model)
@@ -119,4 +123,4 @@ if __name__ == '__main__':
             dataframe.loc[dataframe['Model'] == model, ml_classifier] = accuracy
 
         print(dataframe)
-        dataframe.to_csv('BT-large-2c-dataset_results.csv', index=False)
+        dataframe.to_csv('BT-large-4c-dataset_results.csv', index=False)
