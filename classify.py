@@ -16,7 +16,9 @@ import pandas as pd
 
 model_list = ['resnet50', 'resnet101', 'densenet121', 'densenet169', 'vgg16', 'vgg19', 'alexnet', 
               'resnext50_32x4d', 'resnext101_32x8d', 'shufflenet_v2_x1_0', 'mobilenet_v2', 'mnasnet0_5', 
-              'vit_base_patch16_224', 'vit_base_patch32_224', 'vit_large_patch16_224']
+              'vit_base_patch16_224', 'vit_base_patch32_224', 'vit_large_patch16_224', 'vit_small_patch32_224', 
+              'deit3_small_patch16_224', 'vit_base_patch8_224', 'vit_tiny_patch16_224', 'vit_small_patch16_224',
+              'vit_base_patch16_384', 'vit_tiny_patch16_384', 'vit_small_patch32_384', 'vit_small_patch16_384', 'vit_base_patch32_384']
               
 
 
@@ -52,7 +54,7 @@ def classify(X_train, y_train, X_test, y_test, classifier, search_type='grid'):
     elif classifier == "SVM_RBF":
         clf = SVC(kernel='rbf')
     elif classifier == "XGBoost":
-        clf = XGBClassifier(n_estimators=500, )
+        clf = XGBClassifier(n_estimators=100)
     else:
         print("Invalid classifier")
         return None
@@ -91,12 +93,12 @@ def classify(X_train, y_train, X_test, y_test, classifier, search_type='grid'):
 
 if __name__ == '__main__':
 
-    columns = ['Model', 'MLP', 'GaussianNB', "Adaboost", "KNN", "RFClassifier", "SVM_linear", "SVM_sigmoid", "SVM_RBF"]
+    columns = ['Model', "XGBoost", 'MLP', 'GaussianNB', "Adaboost", "KNN", "RFClassifier", "SVM_linear", "SVM_sigmoid", "SVM_RBF", ]
 
     dataframe = pd.DataFrame(columns=columns)
-    ## add 12 rows to the dataframe with zero values 
+    # add 12 rows to the dataframe with zero values 
     for model in model_list:
-        new_row = {'Model': model, 'MLP': 0, 'GaussianNB': 0, "Adaboost": 0, "KNN": 0, "RFClassifier": 0, "SVM_linear": 0, "SVM_sigmoid": 0, "SVM_RBF": 0} 
+        new_row = {'Model': model, "XGBoost":0, 'MLP': 0, 'GaussianNB': 0, "Adaboost": 0, "KNN": 0, "RFClassifier": 0, "SVM_linear": 0, "SVM_sigmoid": 0, "SVM_RBF": 0} 
         dataframe.loc[len(dataframe)] = new_row
 
     main_path = 'extracted_features_BT-large-4c'
@@ -116,11 +118,13 @@ if __name__ == '__main__':
             X_train = np.squeeze(X_train, axis=1)
             X_test = np.squeeze(X_test, axis=1)
 
-            # # Classify the data
+            print("no of features in X_train:", X_train.shape)
+
+            # Classify the data
             accuracy = classify(X_train, y_train, X_test, y_test, ml_classifier)
             print('Accuracy:', accuracy)
 
             dataframe.loc[dataframe['Model'] == model, ml_classifier] = accuracy
-
+    
         print(dataframe)
         dataframe.to_csv('BT-large-4c-dataset_results.csv', index=False)

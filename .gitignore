@@ -3,4 +3,8 @@ BrainTumorDatasets
 Images
 extracted_features
 *.npy
+*.pptx
+Figures/*
+test_images/*
+*.jpg
 
