@@ -42,9 +42,10 @@ def classify(X_train, y_train, X_test, y_test, classifier, search_type='grid'):
     elif classifier == "GaussianNB":
         clf = GaussianNB()
     elif classifier == "Adaboost":
-        clf = AdaBoostClassifier(n_estimators=100, random_state=0)
+        mlp = MLPClassifier(hidden_layer_sizes=(100,100, 50), max_iter=1000)
+        clf = AdaBoostClassifier(estimator=mlp, n_estimators=100, random_state=0)
     elif classifier == "KNN":
-        clf = KNeighborsClassifier(n_neighbors=5)
+        clf = KNeighborsClassifier(n_neighbors=10)
     elif classifier == "RFClassifier":
         clf = RandomForestClassifier(n_estimators=100, max_depth=2, random_state=0)
     elif classifier == "SVM_linear":

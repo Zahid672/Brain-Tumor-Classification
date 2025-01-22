@@ -1,0 +1,5 @@
+Model,XGBoost,MLP,GaussianNB,Adaboost,KNN,RFClassifier,SVM_linear,SVM_sigmoid,SVM_RBF
+vit_base_patch32_384 + vit_small_patch32_224,0,0.7577424318728666,0.3330142409490236,0,0,0,0,0,0
+vit_base_patch32_384 + vit_small_patch16_224,0,0.7442289183593531,0.33368557998992776,0,0,0,0,0,0
+vit_small_patch32_224 + vit_small_patch16_224,0,0.7222739354261093,0.41020368194281237,0,0,0,0,0,0
+vit_base_patch32_384 + vit_small_patch32_224 + vit_small_patch16_224,0,0.752488249118684,0.3247859660903139,0,0,0,0,0,0
