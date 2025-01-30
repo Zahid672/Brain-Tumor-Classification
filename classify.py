@@ -7,6 +7,7 @@ from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier  
 from xgboost import XGBClassifier
 
 ## svm
@@ -24,6 +25,74 @@ model_list = ['resnet50', 'resnet101', 'densenet121', 'densenet169', 'vgg16', 'v
 
 ML_CLASSIFIER = ['MLP', 'GaussianNB', "Adaboost", "KNN", "RFClassifier", "SVM_linear", "SVM_sigmoid", "SVM_RBF", "XGBoost"] # "ELM"
 
+# def classify(X_train, y_train, X_test, y_test, classifier, search_type='grid'):
+#     """
+#     Classify the data using a Random Forest Classifier
+#     :param X_train: Training data
+#     :param y_train: Training labels
+#     :param X_test: Testing data
+#     :param y_test: Testing labels
+#     :param search_type: Type of search to perform
+#     :return: Accuracy of the classifier
+#     """
+#     # Create a Random Forest Classifier
+#     #clf = RandomForestClassifier()
+
+#     if classifier == "MLP":
+#         clf = MLPClassifier(hidden_layer_sizes=(100,100, 50), max_iter=1000)
+#     elif classifier == "GaussianNB":
+#         clf = GaussianNB()
+#     elif classifier == "Adaboost":
+#         mlp = MLPClassifier(hidden_layer_sizes=(100,100, 50), max_iter=1000)
+#         clf = AdaBoostClassifier(estimator=mlp, n_estimators=100, random_state=0)
+#     elif classifier == "KNN":
+#         clf = KNeighborsClassifier(n_neighbors=10)
+#     elif classifier == "RFClassifier":
+#         clf = RandomForestClassifier(n_estimators=100, max_depth=2, random_state=0)
+#     elif classifier == "SVM_linear":
+#         clf = SVC(kernel='linear')
+#     elif classifier == "SVM_sigmoid":
+#         clf = SVC(kernel='sigmoid')
+#     elif classifier == "SVM_RBF":
+#         clf = SVC(kernel='rbf')
+#     elif classifier == "XGBoost":
+#         clf = XGBClassifier(n_estimators=100)
+#     else:
+#         print("Invalid classifier")
+#         return None
+    
+#    # clf = SVC(kernel='linear')
+
+#     # # # Define the parameters to search
+#     # param_dist = {
+#     #    'C': [0.1, 1, 10, 100, 1000],
+#     #     'gamma': [1, 0.1, 0.01, 0.001, 0.0001],
+#     #     'kernel': ['linear'],
+#     #     'degree': [1, 2, 3, 4, 5],
+#     #     'tol': [1e-3, 1e-4, 1e-5, 1e-6]
+#     # }
+
+#     # # Perform the search
+#     # if search_type == 'grid':
+#     #     search = GridSearchCV(clf, param_grid=param_dist, cv=5, n_jobs=-1)
+#     # else:
+#     #     search = RandomizedSearchCV(clf, param_distributions=param_dist, cv=5, n_iter=50)
+
+
+
+#     # Fit the model
+#     clf.fit(X_train, y_train)
+
+#     # Predict the test data
+#     y_pred = clf.predict(X_test)
+
+#     # Calculate the accuracy
+#     accuracy = balanced_accuracy_score(y_test, y_pred)
+    
+#     return accuracy
+
+
+
 def classify(X_train, y_train, X_test, y_test, classifier, search_type='grid'):
     """
     Classify the data using a Random Forest Classifier
@@ -38,48 +107,30 @@ def classify(X_train, y_train, X_test, y_test, classifier, search_type='grid'):
     #clf = RandomForestClassifier()
 
     if classifier == "MLP":
+        # clf = MLPClassifier(hidden_layer_sizes=(100,100, 50), max_iter=1000) ### uncomment if the performance is not good with below hyperparameter
         clf = MLPClassifier(hidden_layer_sizes=(100,100, 50), max_iter=1000)
-    elif classifier == "GaussianNB":
-        clf = GaussianNB()
+    elif classifier == "GaussianNB": ### {'priors': None, 'var_smoothing': 1e-05}
+        clf = GaussianNB(priors=None, var_smoothing= 1e-05) ### Often, the default parameters work well for many datasets.
     elif classifier == "Adaboost":
-        mlp = MLPClassifier(hidden_layer_sizes=(100,100, 50), max_iter=1000)
-        clf = AdaBoostClassifier(estimator=mlp, n_estimators=100, random_state=0)
+        dtc = DecisionTreeClassifier(ccp_alpha=0.0, class_weight='balanced', criterion='entropy', max_depth=10, max_features=None, max_leaf_nodes=None, min_impurity_decrease=0.0, min_samples_leaf=2, min_samples_split=2, splitter='best')
+        clf = AdaBoostClassifier(estimator=dtc, n_estimators=200, random_state=0, learning_rate=1) ###{'learning_rate': 1, 'n_estimators': 200}
+        
     elif classifier == "KNN":
-        clf = KNeighborsClassifier(n_neighbors=10)
-    elif classifier == "RFClassifier":
-        clf = RandomForestClassifier(n_estimators=100, max_depth=2, random_state=0)
-    elif classifier == "SVM_linear":
+        clf = KNeighborsClassifier(algorithm='auto', leaf_size=10, metric='euclidean', n_jobs=-1,  n_neighbors=1, p=1, weights='uniform')  
+    elif classifier == "RFClassifier": ### 
+        clf = RandomForestClassifier(bootstrap = False, criterion = 'entropy', max_depth = None, max_features = 'sqrt', min_samples_leaf = 1, min_samples_split = 2, n_estimators = 500, oob_score = False, random_state = 42)
+    elif classifier == "SVM_linear": ##
         clf = SVC(kernel='linear')
-    elif classifier == "SVM_sigmoid":
+    elif classifier == "SVM_sigmoid": ###
         clf = SVC(kernel='sigmoid')
-    elif classifier == "SVM_RBF":
-        clf = SVC(kernel='rbf')
-    elif classifier == "XGBoost":
-        clf = XGBClassifier(n_estimators=100)
+    elif classifier == "SVM_RBF": 
+        clf = SVC(C=10, cache_size = 200, class_weight = None, gamma = 'scale', kernel = 'rbf', max_iter = -1, probability = True, shrinking = True, tol = 0.001)
+    elif classifier == "XGBoost": #'learning_rate': 0.1, 'max_depth': 3, 'n_estimators': 300, 'subsample': 0.7
+        clf = XGBClassifier(n_estimators=300, learning_rate=0.1, max_depth=3,subsample=0.7)
     else:
         print("Invalid classifier")
         return None
-    
-   # clf = SVC(kernel='linear')
-
-    # # # Define the parameters to search
-    # param_dist = {
-    #    'C': [0.1, 1, 10, 100, 1000],
-    #     'gamma': [1, 0.1, 0.01, 0.001, 0.0001],
-    #     'kernel': ['linear'],
-    #     'degree': [1, 2, 3, 4, 5],
-    #     'tol': [1e-3, 1e-4, 1e-5, 1e-6]
-    # }
-
-    # # Perform the search
-    # if search_type == 'grid':
-    #     search = GridSearchCV(clf, param_grid=param_dist, cv=5, n_jobs=-1)
-    # else:
-    #     search = RandomizedSearchCV(clf, param_distributions=param_dist, cv=5, n_iter=50)
-
-
-
-    # Fit the model
+        # Fit the model
     clf.fit(X_train, y_train)
 
     # Predict the test data
@@ -89,7 +140,6 @@ def classify(X_train, y_train, X_test, y_test, classifier, search_type='grid'):
     accuracy = balanced_accuracy_score(y_test, y_pred)
     
     return accuracy
-
 
 
 if __name__ == '__main__':
@@ -128,4 +178,4 @@ if __name__ == '__main__':
             dataframe.loc[dataframe['Model'] == model, ml_classifier] = accuracy
     
         print(dataframe)
-        dataframe.to_csv('BT-large-4c-dataset_results.csv', index=False)
+        dataframe.to_csv('BT-large-4c-dataset_results_finetune_ALL_Models.csv', index=False)
