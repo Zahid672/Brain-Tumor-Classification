@@ -9,7 +9,7 @@ import torchvision.transforms as t
 import numpy as np
 import cv2
 
-from torchvision import transforms
+# from torchvision import transforms
 
 
 # __all__ = ['MyDataset', 'plot_grid_images']
@@ -44,7 +44,7 @@ class CustomDataset(Dataset):
         4. Crop the image using the extreme points
         5. Resize the image to 224x224 using bicubic interpolation 
         """
-        test_dir = "test_images22"
+        test_dir = "test_images"
         if not os.path.exists(test_dir):
             os.mkdir(test_dir)
 
@@ -56,7 +56,10 @@ class CustomDataset(Dataset):
             plt.imshow(image)
             plt.savefig(os.path.join(test_dir, 'original.jpg'))
 
-        
+        ## if the image in not in RGB format, convert it to RGB
+        if len(image.shape) < 3 or  image.shape[-1] == 1:
+            image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
+            clean_image = cv2.cvtColor(clean_image, cv2.COLOR_GRAY2RGB)
         ## step 1: convert the image to binary image
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
@@ -65,7 +68,7 @@ class CustomDataset(Dataset):
         if save:
             plt.imshow(thresh)
             plt.savefig(os.path.join(test_dir, 'binary.jpg'))
-            
+
         ## step 2: Apply morphological operations to remove noise i.e. dilation and erosion
         kernel = np.ones((3, 3), np.uint8)
         thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
@@ -84,7 +87,8 @@ class CustomDataset(Dataset):
             cv2.drawContours(image, [cnt], -1, (0, 255, 0), 2)
             plt.imshow(image)
             plt.savefig(os.path.join(test_dir, 'largest_contour.jpg'))
-            
+
+
         ## step 4: Crop the image using the extreme points
         #crop = image[y:y+h, x:x+w]
         crop = clean_image[y:y+h, x:x+w]
@@ -109,7 +113,7 @@ class CustomDataset(Dataset):
         
         label_map = {0: 'no', 1: 'yes'}
         
-        image_path = os.path.join(self.data_dir, label_map[label], image_name)
+        image_path = os.path.join(self.data_dir, self.data_type, label_map[label], image_name)
         image = Image.open(image_path)
         
         resized_image = self.__preprocess_data(np.array(image), save=False, size=self.size)
@@ -130,32 +134,24 @@ class CustomDataset(Dataset):
             ## convert the tensor to numpy array
             ## apply random rotation (0, 90) degrees to PIL image
             
-            image = transforms.RandomRotation(degrees=(0, 90))(image)
-            image = transforms.RandomHorizontalFlip(p=1)(image)
+            ## convert the image to RGB
+            image =   t.Grayscale(num_output_channels=3)(image)
+            image = t.RandomRotation(degrees=(0, 90))(image)
+            image = t.RandomHorizontalFlip(p=1)(image)
             image.save(saved_image_path)
-            
+
         return image, torch.tensor(label).long()
     
     def __process_data(self):
         if isinstance(self.data_dir, tuple):
             self.data_dir = os.path.join(*self.data_dir)
         
-        no_images = os.listdir(os.path.join(self.data_dir, 'no'))
-        yes_images = os.listdir(os.path.join(self.data_dir, 'yes'))
+        no_images = os.listdir(os.path.join(self.data_dir, self.data_type, 'no'))
+        yes_images = os.listdir(os.path.join(self.data_dir, self.data_type, 'yes'))
+        
+      
         
         
-        yes_images_end_index_train = int(len(yes_images) * 0.8)
-        no_images_end_index_train = int(len(no_images) * 0.8)
-        
-        if self.data_type == 'train':
-            no_images = no_images[0:no_images_end_index_train]
-            yes_images = yes_images[0:yes_images_end_index_train]
-            
-        if self.data_type == "test":
-            no_images = no_images[no_images_end_index_train:]
-            yes_images = yes_images[yes_images_end_index_train:]
-            
-            
         combined_images = no_images + yes_images
         labels = [0]*len(no_images) + [1]*len(yes_images)
         
@@ -182,13 +178,16 @@ def plot_grid_images(x, y, batch_size):
 if __name__ == "__main__":
     data_dir = os.path.join('BrainTumorDatasets', 'BT-large-2c-dataset-253im')
     data_type = "train"
+    batch_size = 9
 
-# #     batch_size = 9
+# #     batch_size = 9 transforms = t.Compose([
+   
 
     transforms = t.Compose([
         t.ToPILImage(),
         t.Grayscale(num_output_channels=3), 
-                             t.ToTensor()])
+        t.ToTensor()
+       ])
 
 
 #     transforms = t.Compose([transforms.Grayscale(num_output_channels=3), 
@@ -199,20 +198,26 @@ if __name__ == "__main__":
 
 # #     ## create the dataset
     # dataset = CustomDataset(data_dir, data_type='test', transform=transforms)
-    train_dataset = CustomDataset(data_dir, data_type='train', transform=transforms)
-    test_dataset = CustomDataset(data_dir, data_type='test', transform=transforms)
-    
-#     # x, y = train_dataset[0]
-# #     ## create dataloader
-# #     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)  ###debugging: len(train_dataloader) is 23)
-# #     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)   ### len(test_dataloader) is 6
+    train_dataset = CustomDataset(data_dir, data_type='train', transform=transforms, is_augment=False)
+    test_dataset = CustomDataset(data_dir, data_type='test', transform=transforms, is_augment=False)
+   
+    # for index in range(len(train_dataset)):
+    #     ## generate random number between 1 and 5
+    #     random_number = np.random.randint(1, 5)
+    #     for i in range(random_number):
+    #         x, y = train_dataset[index]
+        
+    # x, y = train_dataset[0]
+#     ## create dataloader
+    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)  ###debugging: len(train_dataloader) is 23)
+    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)   ### len(test_dataloader) is 6
 
-# #     ##create the dataloader
-# #     # dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
-#     for x, y in train_dataset:
-#         print(x.shape, y.shape)
-#         # plot_grid_images(x,y, 'batch_size')
-#         break
+#     ##create the dataloader
+#     # dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+    for x, y in train_dataset:
+        print(x.shape, y.shape)
+        # plot_grid_images(x,y, 'batch_size')
+        break
 
         
         

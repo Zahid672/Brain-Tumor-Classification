@@ -14,7 +14,7 @@ from tqdm import tqdm
 # __all__ = ['MyDataset', 'plot_grid_images']
 
 class CustomDataset(Dataset):
-    def __init__(self, data_dir, data_type="Training", size=(224, 224),is_augment=False, transform=None, target_transform=None):
+    def __init__(self, data_dir, data_type="Training", size=(224, 224),is_augment=False,  transform=None, target_transform=None):
         super().__init__()
         self.size = size
         self.is_augment = is_augment

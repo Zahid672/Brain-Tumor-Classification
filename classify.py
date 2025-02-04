@@ -118,7 +118,7 @@ def classify(X_train, y_train, X_test, y_test, classifier, search_type='grid'):
     elif classifier == "KNN":
         clf = KNeighborsClassifier(algorithm='auto', leaf_size=10, metric='euclidean', n_jobs=-1,  n_neighbors=1, p=1, weights='uniform')  
     elif classifier == "RFClassifier": ### 
-        clf = RandomForestClassifier(bootstrap = False, criterion = 'entropy', max_depth = None, max_features = 'sqrt', min_samples_leaf = 1, min_samples_split = 2, n_estimators = 500, oob_score = False, random_state = 42)
+        clf = RandomForestClassifier(bootstrap = False, criterion = 'entropy', max_depth = None, max_features = 'sqrt', min_samples_leaf = 1, min_samples_split = 2, n_estimators = 500, oob_score = False, random_state = 42, n_jobs=-1)
     elif classifier == "SVM_linear": ##
         clf = SVC(kernel='linear')
     elif classifier == "SVM_sigmoid": ###
@@ -126,7 +126,7 @@ def classify(X_train, y_train, X_test, y_test, classifier, search_type='grid'):
     elif classifier == "SVM_RBF": 
         clf = SVC(C=10, cache_size = 200, class_weight = None, gamma = 'scale', kernel = 'rbf', max_iter = -1, probability = True, shrinking = True, tol = 0.001)
     elif classifier == "XGBoost": #'learning_rate': 0.1, 'max_depth': 3, 'n_estimators': 300, 'subsample': 0.7
-        clf = XGBClassifier(n_estimators=300, learning_rate=0.1, max_depth=3,subsample=0.7)
+        clf = XGBClassifier(n_estimators=300, learning_rate=0.1, max_depth=3,subsample=0.7, n_jobs=-1)
     else:
         print("Invalid classifier")
         return None

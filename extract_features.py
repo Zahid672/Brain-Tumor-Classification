@@ -16,7 +16,7 @@ from torchvision.models import  MNASNet0_5_Weights, MobileNet_V2_Weights
 import timm
 from tqdm import tqdm
 
-from Dataset_BT_large_4c import CustomDataset #plot_grid_images
+from Dataset import CustomDataset #plot_grid_images
 from model import feature_extracter, vit_feature_extracter
 
 
@@ -57,7 +57,7 @@ vit_models = {
 
 if __name__ == "__main__":
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-    data_dir = 'BrainTumorDatasets', 'BT-large-4c-dataset-3264im'
+    data_dir = 'BrainTumorDatasets', 'BT-large-2c-dataset-253im'
     
 
     transforms = t.Compose([
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     # train_dataset = CustomDataset(data_dir, 'Training', transform=transforms)
     # test_dataset = CustomDataset(data_dir, 'Testing', transform=transforms)
 
-    main_dir = "extracted_features_BT-large-4c"
+    main_dir = "extracted_features_BT-large-2c"
     if not os.path.exists(main_dir):
         os.mkdir(main_dir)
 
