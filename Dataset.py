@@ -198,7 +198,7 @@ if __name__ == "__main__":
 
 # #     ## create the dataset
     # dataset = CustomDataset(data_dir, data_type='test', transform=transforms)
-    train_dataset = CustomDataset(data_dir, data_type='train', transform=transforms, is_augment=False)
+    train_dataset = CustomDataset(data_dir, data_type='train', transform=transforms, is_augment=False) ### True or False
     test_dataset = CustomDataset(data_dir, data_type='test', transform=transforms, is_augment=False)
    
     # for index in range(len(train_dataset)):

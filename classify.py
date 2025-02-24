@@ -23,7 +23,7 @@ model_list = ['resnet50', 'resnet101', 'densenet121', 'densenet169', 'vgg16', 'v
               
 
 
-ML_CLASSIFIER = ['MLP', 'GaussianNB', "Adaboost", "KNN", "RFClassifier", "SVM_linear", "SVM_sigmoid", "SVM_RBF", "XGBoost"] # "ELM"
+ML_CLASSIFIER = ['MLP', 'GaussianNB', "KNN", "RFClassifier", "SVM_linear", "XGBoost",  "Adaboost", "SVM_sigmoid", "SVM_RBF", ] # "ELM"
 
 # def classify(X_train, y_train, X_test, y_test, classifier, search_type='grid'):
 #     """
@@ -113,12 +113,12 @@ def classify(X_train, y_train, X_test, y_test, classifier, search_type='grid'):
         clf = GaussianNB(priors=None, var_smoothing= 1e-05) ### Often, the default parameters work well for many datasets.
     elif classifier == "Adaboost":
         dtc = DecisionTreeClassifier(ccp_alpha=0.0, class_weight='balanced', criterion='entropy', max_depth=10, max_features=None, max_leaf_nodes=None, min_impurity_decrease=0.0, min_samples_leaf=2, min_samples_split=2, splitter='best')
-        clf = AdaBoostClassifier(estimator=dtc, n_estimators=200, random_state=0, learning_rate=1) ###{'learning_rate': 1, 'n_estimators': 200}
+        clf = AdaBoostClassifier(estimator=dtc, n_estimators=50, random_state=0, learning_rate=1) ###{'learning_rate': 1, 'n_estimators': 200}
         
     elif classifier == "KNN":
         clf = KNeighborsClassifier(algorithm='auto', leaf_size=10, metric='euclidean', n_jobs=-1,  n_neighbors=1, p=1, weights='uniform')  
     elif classifier == "RFClassifier": ### 
-        clf = RandomForestClassifier(bootstrap = False, criterion = 'entropy', max_depth = None, max_features = 'sqrt', min_samples_leaf = 1, min_samples_split = 2, n_estimators = 500, oob_score = False, random_state = 42, n_jobs=-1)
+        clf = RandomForestClassifier(bootstrap = False, criterion = 'entropy', max_depth = None, max_features = 'sqrt', min_samples_leaf = 1, min_samples_split = 2, n_estimators = 50, oob_score = False, random_state = 42, n_jobs=-1)
     elif classifier == "SVM_linear": ##
         clf = SVC(kernel='linear')
     elif classifier == "SVM_sigmoid": ###
@@ -126,7 +126,7 @@ def classify(X_train, y_train, X_test, y_test, classifier, search_type='grid'):
     elif classifier == "SVM_RBF": 
         clf = SVC(C=10, cache_size = 200, class_weight = None, gamma = 'scale', kernel = 'rbf', max_iter = -1, probability = True, shrinking = True, tol = 0.001)
     elif classifier == "XGBoost": #'learning_rate': 0.1, 'max_depth': 3, 'n_estimators': 300, 'subsample': 0.7
-        clf = XGBClassifier(n_estimators=300, learning_rate=0.1, max_depth=3,subsample=0.7, n_jobs=-1)
+        clf = XGBClassifier(n_estimators=100, learning_rate=0.1, max_depth=3,subsample=0.7, n_jobs=-1)
     else:
         print("Invalid classifier")
         return None
@@ -146,14 +146,19 @@ if __name__ == '__main__':
 
     columns = ['Model', "XGBoost", 'MLP', 'GaussianNB', "Adaboost", "KNN", "RFClassifier", "SVM_linear", "SVM_sigmoid", "SVM_RBF", ]
 
-    dataframe = pd.DataFrame(columns=columns)
+    dataframe_path = 'BT-large-4c-dataset_results_finetune_ALL_Models.csv'
+    # dataframe = pd.DataFrame(columns=columns)
     # add 12 rows to the dataframe with zero values 
-    for model in model_list:
-        new_row = {'Model': model, "XGBoost":0, 'MLP': 0, 'GaussianNB': 0, "Adaboost": 0, "KNN": 0, "RFClassifier": 0, "SVM_linear": 0, "SVM_sigmoid": 0, "SVM_RBF": 0} 
-        dataframe.loc[len(dataframe)] = new_row
+    # for model in model_list:
+    #     new_row = {'Model': model, "XGBoost":0, 'MLP': 0, 'GaussianNB': 0, "Adaboost": 0, "KNN": 0, "RFClassifier": 0, "SVM_linear": 0, "SVM_sigmoid": 0, "SVM_RBF": 0} 
+    #     dataframe.loc[len(dataframe)] = new_row
+    dataframe = pd.read_csv(dataframe_path)
+    
 
-    main_path = 'extracted_features_BT-large-2c' ### 'extracted_features_BT-large-2c'  ### 'extracted_features_BT-small-2c'
-    for ml_classifier in ML_CLASSIFIER:
+    
+    
+    main_path = 'extracted_features_BT-large-4c' ##
+    for ml_classifier in ML_CLASSIFIER[7:]:
         for model in model_list:
             print('Model:', model)
 
@@ -178,4 +183,4 @@ if __name__ == '__main__':
             dataframe.loc[dataframe['Model'] == model, ml_classifier] = accuracy
     
         print(dataframe)
-        dataframe.to_csv('BT-large-2c-dataset_results_finetune_ALL_Models.csv', index=False) ##change here
+        dataframe.to_csv('BT-large-4c-dataset_results_finetune_ALL_Models_v3.csv', index=False)
