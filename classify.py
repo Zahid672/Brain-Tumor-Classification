@@ -146,7 +146,7 @@ if __name__ == '__main__':
 
     columns = ['Model', "XGBoost", 'MLP', 'GaussianNB', "Adaboost", "KNN", "RFClassifier", "SVM_linear", "SVM_sigmoid", "SVM_RBF", ]
 
-    dataframe_path = 'BT-large-4c-dataset_results_finetune_ALL_Models.csv'
+    dataframe_path = 'BT-large-4c-dataset_results_finetune_ALL_Models_v2.csv'
     # dataframe = pd.DataFrame(columns=columns)
     # add 12 rows to the dataframe with zero values 
     # for model in model_list:
@@ -158,7 +158,7 @@ if __name__ == '__main__':
     
     
     main_path = 'extracted_features_BT-large-4c' ##
-    for ml_classifier in ML_CLASSIFIER[7:]:
+    for ml_classifier in ML_CLASSIFIER[-1:]:
         for model in model_list:
             print('Model:', model)
 
