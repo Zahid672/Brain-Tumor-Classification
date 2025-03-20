@@ -1,0 +1,5 @@
+Model,vit_large_patch16_224,vit_base_patch32_384,vit_small_patch32_384,vit_base_patch32_224,vit_base_patch16_384
+KNN + MLP,0.99,0.9917,0.9867,0.9917,0.9867
+KNN + SVM_RBF,0.99,0.9933,0.995,0.9933,0.985
+MLP + SVM_RBF,0.995,0.99,0.9933,0.9967,0.9867
+KNN + SVM_RBF + MLP,0.995,0.9933,0.995,0.9967,0.9917

@@ -3,7 +3,7 @@ from torch import nn
 from torchvision.models import resnet101, ResNet101_Weights
 import timm
 
-class feature_extracter(nn.Module):
+class feature_extracter(nn.Module): ## CNN
     def __init__(self, base_model):
         super().__init__()
         self.base_model = base_model
@@ -16,13 +16,13 @@ class feature_extracter(nn.Module):
         features = features.view(features.size(0), -1)  # Flatten: (batch_size, 2048)
         return features
     
-class vit_feature_extracter(nn.Module):
+class vit_feature_extracter(nn.Module): ### VIT
     def __init__(self, base_vit):
         super().__init__()
         self.base_vit = base_vit
         # Remove the head in the vit model and return the hidden features
        
-        
+        ## Question: why "features = features.view(features.size(0), -1)" is not needed here? 
         
     def forward(self, x):
         # Get features before FC layer and flatten

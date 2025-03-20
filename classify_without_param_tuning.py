@@ -146,23 +146,23 @@ if __name__ == '__main__':
 
     columns = ['Model', "XGBoost", 'MLP', 'GaussianNB', "Adaboost", "KNN", "RFClassifier", "SVM_linear", "SVM_sigmoid", "SVM_RBF", ]
 
-    dataframe_path = 'BT-large-2c-dataset_results_default_parameters.csv'
+    dataframe_path = 'BT-small-2c-dataset_results_default_parameters.csv'
     
     
-    # dataframe = pd.DataFrame(columns=columns)
-    # # add 12 rows to the dataframe with zero values 
-    # for model in model_list:
-    #     new_row = {'Model': model, "XGBoost":0, 'MLP': 0, 'GaussianNB': 0, "Adaboost": 0, "KNN": 0, "RFClassifier": 0, "SVM_linear": 0, "SVM_sigmoid": 0, "SVM_RBF": 0} 
-    #     dataframe.loc[len(dataframe)] = new_row
+    dataframe = pd.DataFrame(columns=columns)
+    # add 12 rows to the dataframe with zero values 
+    for model in model_list:
+        new_row = {'Model': model, "XGBoost":0, 'MLP': 0, 'GaussianNB': 0, "Adaboost": 0, "KNN": 0, "RFClassifier": 0, "SVM_linear": 0, "SVM_sigmoid": 0, "SVM_RBF": 0} 
+        dataframe.loc[len(dataframe)] = new_row
    
    
-    dataframe = pd.read_csv(dataframe_path)
+    # dataframe = pd.read_csv(dataframe_path)
     
 
     
     
-    main_path = 'extracted_features_BT-large-2c' ##
-    for ml_classifier in ML_CLASSIFIER[5:]:
+    main_path = 'extracted_features_BT-small-2c' ##
+    for ml_classifier in ML_CLASSIFIER:
         for model in model_list:
             print('Model:', model)
 
