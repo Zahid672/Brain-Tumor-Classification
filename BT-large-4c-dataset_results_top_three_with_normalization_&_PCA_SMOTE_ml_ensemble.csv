@@ -1,0 +1,6 @@
+Model,vit_small_patch32_224,mnasnet0_5,vgg16,vit_base_patch32_384,vit_small_patch16_224,Average
+RFClassifier + MLP,0.98,0.9417,0.96,0.9883,0.9867,0.97134
+RFClassifier + KNN,0.9867,0.9317,0.96,0.99,0.9817,0.97002
+MLP + KNN,0.9917,0.9633,0.9783,0.9933,0.9867,0.98266
+RFClassifier + MLP + KNN,0.9917,0.96,0.9717,0.9933,0.9917,0.98168
+Average,0.987525,0.949175,0.9675,0.991225,0.9867,

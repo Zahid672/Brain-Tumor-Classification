@@ -1,5 +1,6 @@
-Model,vit_large_patch16_224,vit_base_patch32_384,vit_small_patch32_384,vit_base_patch32_224,vit_base_patch16_384
-KNN + MLP,0.99,0.9917,0.9867,0.9917,0.9867
-KNN + SVM_RBF,0.99,0.9933,0.995,0.9933,0.985
-MLP + SVM_RBF,0.995,0.99,0.9933,0.9967,0.9867
-KNN + SVM_RBF + MLP,0.995,0.9933,0.995,0.9967,0.9917
+Model,vit_base_patch16_224,vit_small_patch16_224,vit_small_patch32_224,vit_base_patch16_384,vit_tiny_patch16_224,Average
+SVM_linear + SVM_RBF,0.9867,0.9933,0.9817,0.9867,0.9633,0.98234
+SVM_linear + MLP,0.9867,0.9883,0.9783,0.985,0.9567,0.979
+SVM_RBF + MLP,0.9883,0.9917,0.995,0.9867,0.9817,0.98868
+SVM_linear + SVM_RBF + MLP,0.985,0.9917,0.9933,0.9867,0.98,0.98734
+Average,0.986675,0.99125,0.987075,0.986275,0.970425,

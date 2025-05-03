@@ -1,0 +1,6 @@
+Model,vit_base_patch16_224,vit_small_patch16_224,vit_small_patch32_224,vit_base_patch16_384,vit_tiny_patch16_224,Average
+SVM_linear + SVM_RBF,0.9750,0.9500,0.9750,0.9750,0.9250,0.9600
+SVM_linear + MLP,0.9750,0.9500,0.9750,0.9750,0.9250,0.9600
+SVM_RBF + MLP,0.9500,0.9750,0.9750,0.9750,0.9750,0.9700
+SVM_linear + SVM_RBF + MLP,0.9750,0.9750,0.9750,0.9589,0.9500,0.9668
+Average,0.9688,0.9625,0.9750,0.9710,0.9438,
