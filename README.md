@@ -26,7 +26,7 @@ The repository provides a comprehensive implementation of a multi-level informat
 
 Our proposed architecture
 
-![Brain Tumor Classification_Code_Datasets](Figures/Proposed_Model.png)
+![Brain-Tumor-Classification](Figures/Proposed_Model.png)
 
 
 ## Datasets
