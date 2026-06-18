@@ -37,6 +37,36 @@ The framework was evaluated on:
 2. **BT-large-2c** (Tumor vs Non-Tumor)
 3. **BT-large-4c** (Glioma, Meningioma, Pituitary, Normal)
 
+
+## Installation
+
+Clone the repository and install dependencies:
+
+```bash
+# Clone the repository
+
+git clone https://github.com/Zahid672/Brain-Tumor-Classification.git
+cd Brain-Tumor-Classification
+
+# Install required Python packages
+pip install -r requirements.txt
+```
+## Requirements
+
+- torch
+- torchvision
+- timm
+- numpy
+- opencv-python
+- Pillow
+- matplotlib
+- pandas
+- scikit-learn
+- xgboost
+- tqdm
+- scipy
+- CUDA-enabled torch (for GPU acceleration)
+
 ## Repository Structure
 
 ```text
